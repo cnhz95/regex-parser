@@ -117,12 +117,6 @@ Word* Parser::parse_word(It& first, It last) {
 Simple* Parser::parse_simple(It& first, It last) {
     It temp = first;
     auto p_simple = new Simple;
-    Greedy* p_greedy = parse_greedy(first, last);
-    if (p_greedy) {
-        p_simple->add_child(p_greedy);
-        return p_simple;
-    }
-    first = temp;
     Star* p_star = parse_star(first, last);
     if (p_star) {
         p_simple->add_child(p_star);
@@ -144,28 +138,17 @@ Simple* Parser::parse_simple(It& first, It last) {
     return nullptr;
 }
 
-Greedy* Parser::parse_greedy(It& first, It last) {
-    if (m_lexer.lex(first, last) != Token::DOT) {
-        return nullptr;
-    }
-    first++;
-    if (m_lexer.lex(first, last) != Token::STAR) {
-        return nullptr;
-    }
-    first++;
-    auto p_greedy = new Greedy;
-    auto p_star = new Star;
-    p_star->add_child(new Dot);
-    p_greedy->add_child(p_star);
-    return p_greedy;
-}
-
 Star* Parser::parse_star(It& first, It last) {
     It temp = first;
+    Dot* p_dot = nullptr;
     Char* p_char = parse_char(first, last);
     if (!p_char) {
         first = temp;
-        return nullptr;
+        p_dot = parse_dot(first, last);
+        if (!p_dot) {
+            first = temp;
+            return nullptr;
+        }
     }
     if (m_lexer.lex(first, last) != Token::STAR) {
         first = temp;
@@ -173,7 +156,7 @@ Star* Parser::parse_star(It& first, It last) {
     }
     first++;
     auto p_star = new Star;
-    p_star->add_child(p_char);
+    p_char ? p_star->add_child(p_char) : p_star->add_child(p_dot);
     return p_star;
 }
 

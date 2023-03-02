@@ -52,22 +52,16 @@ struct Count : ASTNode {
     int m_count{};
 };
 
-struct Greedy : ASTNode {
-    bool evaluate(It& first, It last) override {
-        if (first == last) {
-            return false;
-        }
-        return true;
-    }
-};
-
 struct Star : ASTNode {
     bool evaluate(It& first, It last) override {
         if (first == last) {
             return false;
         }
-        while (m_children[0]->evaluate(first, last)) {}
-        return true;
+        bool result = false;
+        while (m_children[0]->evaluate(first, last)) {
+            result = true;
+        }
+        return result;
     }
 };
 

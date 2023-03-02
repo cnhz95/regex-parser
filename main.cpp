@@ -16,9 +16,8 @@
  * <group> := <'('> <expr> <')'>
  * <or> := <word> <'+'> <word>
  * <word> := <simple> [<word>]
- * <simple> := <greedy> | <star>| <count> | <char>
- * <greedy> := '.*'
- * <star> := <char> <'*'>
+ * <simple> := <star> | <count> | <char>
+ * <star> := <char> <'*'> | <dot> <'*'>
  * <count> := <char> <'{'> <digit> <'}'> | <dot> <'{'> <digit> <'}'>
  * <char> := [A-Za-z]
  * <dot> := '.'

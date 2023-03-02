@@ -24,7 +24,6 @@ private:
     Or* parse_or(It& first, It last);
     Simple* parse_simple(It& first, It last);
     Word* parse_word(It& first, It last);
-    Greedy* parse_greedy(It& first, It last);
     Star* parse_star(It& first, It last);
     Count* parse_count(It& first, It last);
     Char* parse_char(It& first, It last);
