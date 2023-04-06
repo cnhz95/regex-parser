@@ -1,9 +1,3 @@
-//
-// Christian Hernandez
-// DT096G Programspråksteori
-// Laboration 1
-//
-
 #ifndef REGEX_PARSER_NODES_H
 #define REGEX_PARSER_NODES_H
 
@@ -17,7 +11,7 @@ struct ASTNode {
     std::vector<ASTNode*> m_children;
 };
 
-struct Dot : ASTNode {
+struct Any : ASTNode {
     bool evaluate(It& first, It last) override {
         if (first == last) {
             return false;
@@ -37,6 +31,19 @@ struct Char : ASTNode {
     char m_char{};
 };
 
+struct Greedy : ASTNode {
+    bool evaluate(It& first, It last) override {
+        if (first == last) {
+            return false;
+        }
+        bool result = false;
+        while (m_children[0]->evaluate(first, last)) {
+            result = true;
+        }
+        return result;
+    }
+};
+
 struct Count : ASTNode {
     bool evaluate(It& first, It last) override {
         if (first == last) {
@@ -50,19 +57,6 @@ struct Count : ASTNode {
         return true;
     }
     int m_count{};
-};
-
-struct Star : ASTNode {
-    bool evaluate(It& first, It last) override {
-        if (first == last) {
-            return false;
-        }
-        bool result = false;
-        while (m_children[0]->evaluate(first, last)) {
-            result = true;
-        }
-        return result;
-    }
 };
 
 struct Simple : ASTNode {

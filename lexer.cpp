@@ -1,12 +1,6 @@
-//
-// Christian Hernandez
-// DT096G Programspråksteori
-// Laboration 1
-//
-
 #include "lexer.h"
 
-Token Lexer::lex(It &first, It last) {
+Token Lexer::lex(It &first, It last) const {
     while (std::isspace(*first) && first != last) {
         first++;
     }
@@ -23,9 +17,9 @@ Token Lexer::lex(It &first, It last) {
         case '+':
             return Token::OR;
         case '*':
-            return Token::STAR;
+            return Token::GREEDY;
         case '.':
-            return Token::DOT;
+            return Token::ANY;
         case '(':
             return Token::L_PAREN;
         case ')':

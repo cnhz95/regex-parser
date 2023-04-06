@@ -1,26 +1,21 @@
-//
-// Christian Hernandez
-// DT096G Programspråksteori
-// Laboration 1
-//
-
 #include "lexer.h"
 #include "parser.h"
 #include <iostream>
 
 /*
- * Recursive descent parser implementing the following BNF grammar
+ * Recursive-descent parser implementing the following EBNF grammar
  * <match> := <expr>
  * <expr> := <subexpr> [<expr>]
  * <subexpr> := <group> | <or> | <count> | <word>
- * <group> := <'('> <expr> <')'>
- * <or> := <word> <'+'> <word>
+ * <group> := '(' <expr> ')'
+ * <or> := <word> '+' <word>
  * <word> := <simple> [<word>]
- * <simple> := <star> | <count> | <char>
- * <star> := <char> <'*'> | <dot> <'*'>
- * <count> := <char> <'{'> <digit> <'}'> | <dot> <'{'> <digit> <'}'>
+ * <simple> := <count> | <greedy> | <char>
+ * <count> := <char> '{' <digit> '}' | <any> '{' <digit> '}'
+ * <greedy> := <char> '*' | <any> '*'
  * <char> := [A-Za-z]
- * <dot> := '.'
+ * <digit> := [0-9]
+ * <any> := '.'
  */
 
 int main(int argc, char* argv[]) {

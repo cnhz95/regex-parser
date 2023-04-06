@@ -1,9 +1,3 @@
-//
-// Christian Hernandez
-// DT096G Programspråksteori
-// Laboration 1
-//
-
 #include "parser.h"
 
 Parser::Parser(It &first, It last) : m_match(parse_match(first, last)) {}
@@ -117,15 +111,15 @@ Word* Parser::parse_word(It& first, It last) {
 Simple* Parser::parse_simple(It& first, It last) {
     It temp = first;
     auto p_simple = new Simple;
-    Star* p_star = parse_star(first, last);
-    if (p_star) {
-        p_simple->add_child(p_star);
-        return p_simple;
-    }
-    first = temp;
     Count* p_count = parse_count(first, last);
     if (p_count) {
         p_simple->add_child(p_count);
+        return p_simple;
+    }
+    first = temp;
+    Greedy* p_greedy = parse_greedy(first, last);
+    if (p_greedy) {
+        p_simple->add_child(p_greedy);
         return p_simple;
     }
     first = temp;
@@ -138,36 +132,14 @@ Simple* Parser::parse_simple(It& first, It last) {
     return nullptr;
 }
 
-Star* Parser::parse_star(It& first, It last) {
-    It temp = first;
-    Dot* p_dot = nullptr;
-    Char* p_char = parse_char(first, last);
-    if (!p_char) {
-        first = temp;
-        p_dot = parse_dot(first, last);
-        if (!p_dot) {
-            first = temp;
-            return nullptr;
-        }
-    }
-    if (m_lexer.lex(first, last) != Token::STAR) {
-        first = temp;
-        return nullptr;
-    }
-    first++;
-    auto p_star = new Star;
-    p_char ? p_star->add_child(p_char) : p_star->add_child(p_dot);
-    return p_star;
-}
-
 Count* Parser::parse_count(It& first, It last) {
     It temp = first;
-    Dot* p_dot = nullptr;
+    Any* p_any = nullptr;
     Char* p_char = parse_char(first, last);
     if (!p_char) {
         first = temp;
-        p_dot = parse_dot(first, last);
-        if (!p_dot) {
+        p_any = parse_any(first, last);
+        if (!p_any) {
             first = temp;
             return nullptr;
         }
@@ -189,9 +161,31 @@ Count* Parser::parse_count(It& first, It last) {
     }
     first++;
     auto p_count = new Count;
-    p_char ? p_count->add_child(p_char) : p_count->add_child(p_dot);
+    p_char ? p_count->add_child(p_char) : p_count->add_child(p_any);
     p_count->m_count = count;
     return p_count;
+}
+
+Greedy* Parser::parse_greedy(It& first, It last) {
+    It temp = first;
+    Any* p_any = nullptr;
+    Char* p_char = parse_char(first, last);
+    if (!p_char) {
+        first = temp;
+        p_any = parse_any(first, last);
+        if (!p_any) {
+            first = temp;
+            return nullptr;
+        }
+    }
+    if (m_lexer.lex(first, last) != Token::GREEDY) {
+        first = temp;
+        return nullptr;
+    }
+    first++;
+    auto p_greedy = new Greedy;
+    p_char ? p_greedy->add_child(p_char) : p_greedy->add_child(p_any);
+    return p_greedy;
 }
 
 Char* Parser::parse_char(It& first, It last) {
@@ -204,11 +198,11 @@ Char* Parser::parse_char(It& first, It last) {
     return p_char;
 }
 
-Dot* Parser::parse_dot(It& first, It last) {
-    if (m_lexer.lex(first, last) != Token::DOT) {
+Any* Parser::parse_any(It& first, It last) {
+    if (m_lexer.lex(first, last) != Token::ANY) {
         return nullptr;
     }
     first++;
-    auto p_dot = new Dot;
-    return p_dot;
+    auto p_any = new Any;
+    return p_any;
 }
